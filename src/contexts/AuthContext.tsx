@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
@@ -71,7 +71,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(userData);
       localStorage.setItem("phraser_user", JSON.stringify(userData));
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Registration failed");
+      throw new Error(
+        error instanceof Error ? error.message : "Registration failed",
+      );
     }
   };
 
@@ -87,10 +89,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-} 
+// Only export AuthProvider from this file
+export { AuthContext };

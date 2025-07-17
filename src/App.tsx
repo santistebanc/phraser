@@ -1,6 +1,7 @@
 "use client";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { useAuth } from "./contexts/useAuth";
 import AuthForm from "./components/AuthForm";
 import UserDashboard from "./components/UserDashboard";
 import ThemeToggle from "./components/ThemeToggle";

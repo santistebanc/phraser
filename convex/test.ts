@@ -1,8 +1,10 @@
 import { query } from "./_generated/server";
+import { v } from "convex/values";
 
-export const test = query({
+export const testQuery = query({
   args: {},
-  handler: async (ctx) => {
-    return "Hello from Convex! Backend is working.";
+  returns: v.string(),
+  handler: async (_ctx, _args) => {
+    return "Hello from Convex!";
   },
-}); 
+});

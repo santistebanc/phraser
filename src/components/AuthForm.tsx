@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/useAuth";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -8,7 +8,7 @@ export default function AuthForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login, register } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,7 +55,7 @@ export default function AuthForm() {
         <h2 className="text-3xl font-bold text-center mb-4 text-gray-900 dark:text-white">
           {isLogin ? "Login" : "Register"}
         </h2>
-        
+
         {error && (
           <div className="mb-3 p-2 bg-red-500 text-white text-sm border-0">
             {error}
@@ -64,7 +64,10 @@ export default function AuthForm() {
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label htmlFor="email" className="block text-lg font-medium text-gray-900 dark:text-white">
+            <label
+              htmlFor="email"
+              className="block text-lg font-medium text-gray-900 dark:text-white"
+            >
               Email
             </label>
             <input
@@ -78,7 +81,10 @@ export default function AuthForm() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-lg font-medium text-gray-900 dark:text-white">
+            <label
+              htmlFor="password"
+              className="block text-lg font-medium text-gray-900 dark:text-white"
+            >
               Password
             </label>
             <input
@@ -94,7 +100,10 @@ export default function AuthForm() {
 
           {!isLogin && (
             <div>
-              <label htmlFor="name" className="block text-lg font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="name"
+                className="block text-lg font-medium text-gray-900 dark:text-white"
+              >
                 Name
               </label>
               <input
@@ -113,7 +122,7 @@ export default function AuthForm() {
             disabled={isLoading}
             className="w-full py-2 px-4 border-0 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
-            {isLoading ? "Loading..." : (isLogin ? "Login" : "Register")}
+            {isLoading ? "Loading..." : isLogin ? "Login" : "Register"}
           </button>
         </form>
 
@@ -128,10 +137,12 @@ export default function AuthForm() {
             }}
             className="text-blue-600 dark:text-blue-400 hover:text-blue-500 text-lg cursor-pointer"
           >
-            {isLogin ? "Need an account? Register" : "Already have an account? Login"}
+            {isLogin
+              ? "Need an account? Register"
+              : "Already have an account? Login"}
           </button>
         </div>
       </div>
     </div>
   );
-} 
+}
