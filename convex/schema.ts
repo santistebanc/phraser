@@ -10,10 +10,12 @@ export default defineSchema({
     totalExercises: v.number(),
     averageScore: v.number(),
     lastActive: v.number(), // timestamp
-    preferences: v.optional(v.object({
-      theme: v.optional(v.string()),
-      notifications: v.optional(v.boolean()),
-    })),
+    preferences: v.optional(
+      v.object({
+        theme: v.optional(v.string()),
+        notifications: v.optional(v.boolean()),
+      }),
+    ),
     createdAt: v.number(),
   }).index("by_email", ["email"]),
 
@@ -26,7 +28,12 @@ export default defineSchema({
     tags: v.array(v.string()),
     createdAt: v.number(),
     lastUpdated: v.number(),
-  }).index("by_difficulty", ["difficulty"]),
+    isActive: v.boolean(), // For content moderation
+    usageCount: v.number(), // Total times used in exercises
+  })
+    .index("by_difficulty", ["difficulty"])
+    .index("by_category", ["category"])
+    .index("by_active", ["isActive"]),
 
   exercises: defineTable({
     expressionId: v.id("expressions"),
@@ -38,7 +45,12 @@ export default defineSchema({
     createdAt: v.number(),
     globalUsageCount: v.number(), // Total usage across all users
     globalAverageScore: v.number(), // Average score across all users
-  }).index("by_expression", ["expressionId"]),
+    isActive: v.boolean(), // For content moderation
+  })
+    .index("by_expression", ["expressionId"])
+    .index("by_type", ["type"])
+    .index("by_difficulty", ["difficulty"])
+    .index("by_active", ["isActive"]),
 
   exerciseAttempts: defineTable({
     userId: v.id("users"),
@@ -49,7 +61,10 @@ export default defineSchema({
     levelChange: v.number(), // ELO change
     timeSpent: v.number(), // seconds
     createdAt: v.number(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_exercise", ["exerciseId"])
+    .index("by_user_time", ["userId", "createdAt"]),
 
   userProgress: defineTable({
     userId: v.id("users"),
@@ -59,5 +74,8 @@ export default defineSchema({
     lastAttempted: v.number(),
     bestScore: v.number(),
     averageScore: v.number(),
-  }).index("by_user_expression", ["userId", "expressionId"]),
-}); 
+  })
+    .index("by_user_expression", ["userId", "expressionId"])
+    .index("by_user", ["userId"])
+    .index("by_expression", ["expressionId"]),
+});
