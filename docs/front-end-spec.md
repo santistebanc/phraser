@@ -1,399 +1,465 @@
-# German Language Learning MVP - UI/UX Specification
+# **Phraser Language Learning App - UI/UX Specification**
 
-## Introduction
+## **Introduction**
 
-This document defines the user experience goals, information architecture, user flows, and visual design specifications for the German Language Learning MVP's user interface. It serves as the foundation for visual design and frontend development, ensuring a cohesive and user-centered experience focused on ultra-compact, distraction-free learning.
+This document defines the user experience goals, information architecture, user flows, and visual design specifications for Phraser's user interface. It serves as the foundation for visual design and frontend development, ensuring a cohesive and user-centered experience.
 
----
+## **Overall UX Goals & Principles**
 
-## Overall UX Goals & Principles
+### **Target User Personas**
 
-### Target User Personas
+**Language Learner (Primary)**: German language students of all levels who want to practice expressions and track their progress. They value clear feedback, engaging exercises, and visible progress indicators.
 
-**Primary User: Intermediate to Advanced German Learner (B2/C1)**
-- **Demographics:** 25-45 years old, college-educated professionals
-- **Current State:** Already proficient in basic German grammar and vocabulary
-- **Goals:** Improve fluency, master nuanced expressions, achieve C1/C2 level
-- **Pain Points:** Lack of effective tools for advanced expression practice
-- **Behavior:** Values efficiency, uses multiple learning resources, seeks targeted practice
+**Casual Learner (Secondary)**: Users who practice occasionally and prefer simple, intuitive interfaces with minimal cognitive load. They need clear navigation and quick access to practice sessions.
 
-**Secondary User: Serious Language Learner**
-- **Characteristics:** Dedicated to language mastery, values quality over quantity
-- **Needs:** Comprehensive feedback, progress tracking, adaptive difficulty
-- **Motivation:** Professional or academic advancement in German
+**Progress-Focused Learner (Tertiary)**: Users who are motivated by detailed statistics, mastery levels, and learning analytics. They want comprehensive tracking and achievement systems.
 
-### Usability Goals
+### **Usability Goals**
 
-1. **Ease of Learning:** New users can start practicing within 2 minutes of first visit
-2. **Efficiency of Use:** Users can complete exercises with minimal cognitive load
-3. **Error Prevention:** Clear feedback prevents confusion about exercise expectations
-4. **Memorability:** Interface is so simple users can return without relearning
-5. **Distraction-Free:** UI elements support focus on language practice only
-6. **Adaptive Experience:** Interface adapts to user's current level and progress
+- **Ease of learning**: New users can start practicing within 2 minutes of first login
+- **Efficiency of use**: Regular users can complete a full practice session in under 10 minutes
+- **Error prevention**: Clear validation and helpful feedback for all user inputs
+- **Memorability**: Infrequent users can return and immediately understand their progress
+- **Engagement**: Users feel motivated to continue learning through positive reinforcement
 
-### Design Principles
+### **Design Principles**
 
-1. **Ultra-Compact Efficiency** - Maximize content visibility, minimize UI bloat
-2. **Sharp, Crisp Aesthetics** - No rounded borders, clean geometric design
-3. **Colorful Visual Hierarchy** - Strategic use of color to guide attention
-4. **Immediate Feedback** - Every action has clear, instant response
-5. **Progressive Disclosure** - Show only essential information at each step
-6. **Accessible by Default** - Design for all users from the start
+1. **Clarity over cleverness** - Prioritize clear communication over aesthetic innovation
+2. **Progressive disclosure** - Show only what's needed, when it's needed
+3. **Consistent patterns** - Use familiar UI patterns throughout the application
+4. **Immediate feedback** - Every action should have a clear, immediate response
+5. **Accessible by default** - Design for all users from the start
 
-### Change Log
-| Date | Version | Description | Author |
-|------|---------|-------------|---------|
-| $(date) | 1.0 | Initial UI/UX specification | UX Expert Agent |
+### **Change Log**
 
----
+| Date       | Version | Description                 | Author            |
+| ---------- | ------- | --------------------------- | ----------------- |
+| 2024-12-19 | 1.0     | Initial UI/UX specification | BMad Orchestrator |
 
-## Information Architecture (IA)
+## **Information Architecture (IA)**
 
-### Site Map / Screen Inventory
+### **Site Map / Screen Inventory**
 
 ```mermaid
 graph TD
-    A[Authentication] --> B[Main Practice Screen]
-    B --> C[Exercise Display]
-    B --> D[Answer Input]
-    B --> E[Feedback Display]
-    B --> F[Progress Indicator]
+    A[Login/Register] --> B[Main Dashboard]
+    B --> C[Expression Browser]
+    B --> D[Exercise Interface]
+    B --> E[Progress Tracker]
+    B --> F[User Profile]
+
+    C --> C1[Expression List]
+    C --> C2[Expression Detail]
+    C --> C3[Search & Filters]
+
+    D --> D1[Exercise Selection]
+    D --> D2[Practice Session]
+    D --> D3[Results & Feedback]
+
+    E --> E1[Progress Overview]
+    E --> E2[Learning History]
+    E --> E3[Statistics & Charts]
+
+    F --> F1[Profile Settings]
+    F --> F2[Preferences]
+    F --> F3[Account Management]
+
     B --> G[Theme Toggle]
-    
-    C --> H[Next Exercise]
-    D --> I[Submit Answer]
-    E --> J[Continue Practice]
-    
-    style A fill:#FFE4B5
-    style B fill:#ADD8E6
-    style C fill:#90EE90
-    style D fill:#90EE90
-    style E fill:#90EE90
-    style F fill:#F0E68C
-    style G fill:#E6E6FA
+    B --> H[Logout]
 ```
 
-### Navigation Structure
+### **Navigation Structure**
 
-**Primary Navigation:** Single-screen application with minimal navigation
-- Main practice screen serves as the central hub
-- No traditional navigation menu required
-- "Next Exercise" button provides primary navigation
+**Primary Navigation:** Top navigation bar with main sections (Dashboard, Expressions, Exercises, Progress, Profile) and user account controls
 
-**Secondary Navigation:** Corner-based controls
-- Theme toggle in top-right corner
-- Progress indicator in top-left corner
-- No secondary navigation menus
+**Secondary Navigation:** Breadcrumbs for deep navigation and contextual actions within each section
 
-**Breadcrumb Strategy:** Not applicable - single-screen focused experience
+**Breadcrumb Strategy:** Show current location and provide quick navigation back to parent sections
 
----
+## **User Flows**
 
-## User Flows
+### **Flow 1: Expression Browsing and Practice**
 
-### Flow 1: Initial User Onboarding
+**User Goal:** Find and practice German expressions at appropriate difficulty level
 
-**User Goal:** Start practicing German expressions immediately
-**Entry Points:** Direct URL access, authentication completion
-**Success Criteria:** User can complete first exercise within 2 minutes
+**Entry Points:** Dashboard "Start Learning" button, Expression Browser navigation
+
+**Success Criteria:** User finds relevant expressions and can start practicing immediately
 
 ```mermaid
 graph TD
-    A[Land on App] --> B{Authenticated?}
-    B -->|No| C[Login/Signup]
-    B -->|Yes| D[Main Practice Screen]
-    C --> D
-    D --> E[View First Exercise]
-    E --> F[Read Question]
-    F --> G[Enter Answer]
-    G --> H[Submit Answer]
-    H --> I[View Feedback]
-    I --> J[Continue to Next]
-    
-    style A fill:#FFE4B5
-    style D fill:#ADD8E6
-    style E fill:#90EE90
-    style I fill:#F0E68C
+    A[User lands on Dashboard] --> B[Click 'Start Learning' or 'Expressions']
+    B --> C[Expression Browser loads]
+    C --> D[User sees filtered expressions]
+    D --> E{User wants to filter?}
+    E -->|Yes| F[Apply category/difficulty filters]
+    E -->|No| G[Browse expressions]
+    F --> G
+    G --> H[User selects expression]
+    H --> I[Expression detail view]
+    I --> J[User clicks 'Practice']
+    J --> K[Exercise interface loads]
+    K --> L[User completes exercise]
+    L --> M[AI scoring and feedback]
+    M --> N[Progress updated]
+    N --> O[Return to browser or continue]
 ```
 
 **Edge Cases & Error Handling:**
-- Network failure during authentication
-- Invalid credentials with clear error messages
-- Loading states for all async operations
-- Graceful handling of empty exercise queue
 
-**Notes:** Focus on speed and simplicity - minimize friction to first exercise
+- No expressions available for selected filters
+- Network errors during loading
+- User session expires during practice
+- Exercise fails to load or score
 
-### Flow 2: Exercise Practice Session
+**Notes:** Filtering should be intuitive with clear visual feedback. Practice flow should be seamless with minimal friction.
 
-**User Goal:** Practice German expressions with immediate feedback
-**Entry Points:** Main practice screen, "Next Exercise" button
-**Success Criteria:** User receives appropriate challenge and helpful feedback
+### **Flow 2: Progress Tracking and Analytics**
+
+**User Goal:** View learning progress and understand improvement areas
+
+**Entry Points:** Dashboard progress cards, Progress navigation, Exercise completion
+
+**Success Criteria:** User gains insights into their learning journey and feels motivated
 
 ```mermaid
 graph TD
-    A[View Exercise] --> B[Read Question]
-    B --> C[Enter Answer]
-    C --> D[Submit Answer]
-    D --> E[Loading Indicator]
-    E --> F[AI Evaluation]
-    F --> G[Display Score]
-    G --> H[Show Feedback]
-    H --> I[Update User Level]
-    I --> J[Next Exercise Button]
-    J --> K[Load Next Exercise]
-    K --> A
-    
-    style A fill:#90EE90
-    style E fill:#FFE4B5
-    style F fill:#ADD8E6
-    style G fill:#F0E68C
-    style I fill:#E6E6FA
+    A[User accesses Progress section] --> B[Progress overview loads]
+    B --> C[User sees key metrics]
+    C --> D{User wants details?}
+    D -->|Yes| E[Drill down to specific areas]
+    D -->|No| F[Continue browsing]
+    E --> G[Detailed progress view]
+    G --> H[User reviews learning history]
+    H --> I[User identifies weak areas]
+    I --> J[User plans next practice session]
+    F --> K[Return to main flow]
+    J --> K
 ```
 
 **Edge Cases & Error Handling:**
-- AI evaluation timeout with retry option
-- Invalid answer format with helpful guidance
-- Network errors with offline indicators
-- Empty answer submission prevention
 
-**Notes:** Maintain focus during evaluation - loading states should be engaging but not distracting
+- No progress data available
+- Incomplete data for new users
+- Performance issues with large datasets
+- Privacy concerns with progress data
 
-### Flow 3: Theme Switching
+**Notes:** Progress should be visually engaging with charts and clear metrics. Focus on positive reinforcement and achievable goals.
 
-**User Goal:** Switch between dark and light themes
-**Entry Points:** Corner theme toggle button
-**Success Criteria:** Theme changes immediately and persists across sessions
+### **Flow 3: Exercise Practice and Feedback**
+
+**User Goal:** Complete exercises and receive helpful feedback to improve
+
+**Entry Points:** Expression detail view, Dashboard quick practice, Progress recommendations
+
+**Success Criteria:** User completes exercise with clear understanding of performance
 
 ```mermaid
 graph TD
-    A[Current Theme] --> B[Click Theme Toggle]
-    B --> C[Instant Theme Change]
-    C --> D[Save Preference]
-    D --> E[Continue Practice]
-    
-    style A fill:#F0E68C
-    style B fill:#E6E6FA
-    style C fill:#90EE90
+    A[User starts exercise] --> B[Exercise interface loads]
+    B --> C[User reads question/context]
+    C --> D[User provides answer]
+    D --> E[AI processes answer]
+    E --> F[Immediate feedback shown]
+    F --> G[Detailed explanation provided]
+    G --> H[Progress updated]
+    H --> I{User wants to continue?}
+    I -->|Yes| J[Next exercise or expression]
+    I -->|No| K[Return to previous screen]
+    J --> L[Repeat exercise flow]
+    K --> M[Save progress and exit]
 ```
 
 **Edge Cases & Error Handling:**
-- Theme preference save failure
-- Incomplete theme loading
-- Browser compatibility issues
 
-**Notes:** Theme change should be instant and smooth, no page reload required
+- AI scoring fails or is unavailable
+- User provides invalid input
+- Exercise times out
+- Network connectivity issues
 
----
+**Notes:** Feedback should be immediate and constructive. AI scoring should feel fair and educational.
 
-## Wireframes & Mockups
+## **Wireframes & Mockups**
 
-### Design Files
-**Primary Design Files:** Figma (recommended) or Sketch for detailed mockups
-**Wireframe Tool:** Miro or FigJam for collaborative wireframing
+### **Design Files**
 
-### Key Screen Layouts
+**Primary Design Files:** Figma design system and component library (to be created)
 
-#### Screen 1: Authentication Screen
-**Purpose:** Simple, secure user authentication
+### **Key Screen Layouts**
+
+#### **Dashboard Screen**
+
+**Purpose:** Main landing page showing user progress and quick access to features
+
 **Key Elements:**
-- Minimal login form with email/password
-- Sharp, geometric input fields
-- Colorful accent for primary action button
-- Ultra-compact layout with minimal padding
-- Clear error messaging for invalid credentials
 
-**Interaction Notes:** Form validation with immediate feedback, loading states for submission
-**Design File Reference:** `auth-screen.fig`
+- User welcome message and current level
+- Progress summary cards (level, exercises, score)
+- Quick action buttons (Start Learning, Continue Practice)
+- Recent activity feed
+- Navigation menu
 
-#### Screen 2: Main Practice Screen
-**Purpose:** Central hub for all learning activities
+**Interaction Notes:** Cards should be clickable for detailed views. Quick actions should be prominent and accessible.
+
+**Design File Reference:** Dashboard wireframe and mockup
+
+#### **Expression Browser Screen**
+
+**Purpose:** Browse and search German expressions with filtering options
+
 **Key Elements:**
-- Large, prominent exercise question display
-- Clean answer input field with sharp borders
-- Colorful "Submit Answer" button
-- Minimal progress indicator (current level only)
-- Corner theme toggle with icon
-- "Next Exercise" button for navigation
 
-**Interaction Notes:** Single exercise focus, immediate feedback display, smooth transitions
-**Design File Reference:** `main-practice-screen.fig`
+- Search bar with autocomplete
+- Filter controls (category, difficulty, tags)
+- Expression cards with preview information
+- Pagination controls
+- Sort options
 
-#### Screen 3: Feedback Display
-**Purpose:** Show AI evaluation results and guidance
+**Interaction Notes:** Filters should update results in real-time. Cards should show difficulty indicators and quick practice buttons.
+
+**Design File Reference:** Expression browser wireframe and mockup
+
+#### **Exercise Interface Screen**
+
+**Purpose:** Interactive exercise practice with immediate feedback
+
 **Key Elements:**
-- Prominent score display (0-1 scale)
-- Detailed feedback text with corrections
-- Color-coded score indicators
-- "Continue" button to next exercise
-- Loading animation during AI evaluation
 
-**Interaction Notes:** Feedback appears immediately after submission, clear next steps
-**Design File Reference:** `feedback-display.fig`
+- Exercise question/context display
+- Answer input area (multiple choice, text input, etc.)
+- Timer (optional)
+- Submit button
+- Progress indicator
 
----
+**Interaction Notes:** Input should be responsive and accessible. Submit should be clearly indicated.
 
-## Component Library / Design System
+**Design File Reference:** Exercise interface wireframe and mockup
 
-### Design System Approach
-**Shadcn UI Base:** Leverage Shadcn UI components with custom theme overrides
-**Custom Components:** Build specialized components for exercise display and feedback
-**Theme System:** Dark/light mode with consistent design tokens
+#### **Progress Tracker Screen**
 
-### Core Components
+**Purpose:** Comprehensive view of learning progress and statistics
 
-#### Component 1: Exercise Card
-**Purpose:** Display individual exercise questions and collect answers
-**Variants:** Translation exercise, contextual exercise, sentence completion
-**States:** Default, focused, loading, error, completed
-**Usage Guidelines:** Always full-width, minimal padding, sharp edges
+**Key Elements:**
 
-#### Component 2: Answer Input
-**Purpose:** Collect user responses with validation
-**Variants:** Text input, textarea for longer answers
-**States:** Empty, typing, valid, invalid, submitting
-**Usage Guidelines:** Clear placeholder text, immediate validation feedback
+- Progress overview charts
+- Learning history timeline
+- Mastery level indicators
+- Achievement badges
+- Performance analytics
 
-#### Component 3: Feedback Display
-**Purpose:** Show AI evaluation results and guidance
-**Variants:** Success, partial success, needs improvement
-**States:** Loading, complete, error
-**Usage Guidelines:** Color-coded by performance level, actionable feedback
+**Interaction Notes:** Charts should be interactive with drill-down capabilities. History should be filterable by date and type.
 
-#### Component 4: Progress Indicator
-**Purpose:** Show current user level and practice status
-**Variants:** Numeric level, progress bar, achievement badges
-**States:** Current level, level change animation
-**Usage Guidelines:** Minimal display, prominent but not distracting
+**Design File Reference:** Progress tracker wireframe and mockup
 
-#### Component 5: Theme Toggle
-**Purpose:** Switch between dark and light themes
-**Variants:** Icon button, text button
-**States:** Light mode, dark mode, transitioning
-**Usage Guidelines:** Corner placement, instant feedback, persistent preference
+## **Component Library / Design System**
 
----
+### **Design System Approach**
 
-## Branding & Style Guide
+**Approach:** Extend existing Tailwind CSS patterns with custom components for language learning specific interactions
 
-### Visual Identity
-**Brand Guidelines:** Minimalist, education-focused design
-**Design Philosophy:** Sharp, geometric, colorful accents, ultra-compact
+### **Core Components**
 
-### Color Palette
+#### **Progress Card Component**
 
-| Color Type | Hex Code | Usage |
-|------------|----------|-------|
-| Primary Blue | #2563EB | Primary actions, links |
-| Success Green | #16A34A | Positive feedback, correct answers |
-| Warning Orange | #EA580C | Partial success, attention needed |
-| Error Red | #DC2626 | Errors, incorrect answers |
-| Neutral Gray | #6B7280 | Text, borders, backgrounds |
-| Accent Purple | #7C3AED | Highlights, special elements |
-| Background Light | #FFFFFF | Light theme background |
-| Background Dark | #0F172A | Dark theme background |
+**Purpose:** Display user progress metrics in an engaging, visual format
 
-### Typography
+**Variants:** Level card, exercise count card, score card, mastery card
 
-**Primary Font:** Inter (clean, readable, modern)
-**Font Sizes:**
-- Large Headings: 24px/1.5rem
-- Body Text: 16px/1rem
-- Small Text: 14px/0.875rem
-- Exercise Text: 18px/1.125rem (larger for readability)
+**States:** Loading, error, empty, normal, highlighted
 
-**Font Weights:**
-- Regular: 400
-- Medium: 500
-- Semibold: 600
-- Bold: 700
+**Usage Guidelines:** Use for dashboard and progress sections. Maintain consistent color coding for different metrics.
 
-### Spacing System
+#### **Expression Card Component**
 
-**Ultra-Compact Spacing:**
-- XS: 4px (0.25rem)
-- S: 8px (0.5rem)
-- M: 12px (0.75rem)
-- L: 16px (1rem)
-- XL: 24px (1.5rem)
-- XXL: 32px (2rem)
+**Purpose:** Display German expressions with metadata and quick actions
 
-**Usage Guidelines:**
-- Minimal padding on containers (8px-12px)
-- Tight spacing between related elements
-- Generous spacing only for content separation
+**Variants:** List view, grid view, detail view
 
-### Icon System
+**States:** Normal, selected, completed, in-progress
 
-**Icon Library:** Lucide React (sharp, geometric icons)
-**Icon Sizes:**
-- Small: 16px
-- Medium: 20px
-- Large: 24px
+**Usage Guidelines:** Include difficulty indicator, category tag, and practice button. Show translation on hover or click.
 
-**Icon Guidelines:**
-- Sharp, geometric style
-- Consistent stroke width
-- Color inheritance from parent
-- Tooltips for all icons
+#### **Exercise Interface Component**
 
----
+**Purpose:** Provide interactive exercise practice with various question types
 
-## Accessibility Requirements
+**Variants:** Multiple choice, fill-in-blank, translation, contextual
 
-### WCAG AA Compliance
-- **Color Contrast:** Minimum 4.5:1 ratio for normal text
+**States:** Loading, active, submitted, feedback, error
+
+**Usage Guidelines:** Maintain consistent layout across exercise types. Provide clear success/error states.
+
+#### **Navigation Component**
+
+**Purpose:** Provide consistent navigation throughout the application
+
+**Variants:** Top navigation, breadcrumbs, mobile menu
+
+**States:** Normal, active, disabled, mobile expanded
+
+**Usage Guidelines:** Use existing color scheme and typography. Ensure mobile responsiveness.
+
+#### **Progress Chart Component**
+
+**Purpose:** Visualize learning progress and statistics
+
+**Variants:** Line chart, bar chart, pie chart, progress ring
+
+**States:** Loading, empty, normal, interactive
+
+**Usage Guidelines:** Use consistent color palette. Provide accessibility features for screen readers.
+
+## **Branding & Style Guide**
+
+### **Visual Identity**
+
+**Brand Guidelines:** Extend existing Phraser brand with language learning focus
+
+### **Color Palette**
+
+| Color Type       | Hex Code | Usage                               |
+| ---------------- | -------- | ----------------------------------- |
+| Primary Blue     | #2563EB  | Buttons, links, primary actions     |
+| Success Green    | #059669  | Progress indicators, success states |
+| Warning Orange   | #D97706  | Difficulty indicators, warnings     |
+| Error Red        | #DC2626  | Error states, destructive actions   |
+| Neutral Gray     | #6B7280  | Text, borders, secondary elements   |
+| Background Light | #FFFFFF  | Light theme backgrounds             |
+| Background Dark  | #1F2937  | Dark theme backgrounds              |
+
+### **Typography**
+
+**Primary Font:** System fonts (Inter, -apple-system, BlinkMacSystemFont)
+**Headings:** Font weights 600-700 for hierarchy
+**Body Text:** Font weight 400 for readability
+**Code/Technical:** Monospace font for expressions and examples
+
+### **Spacing System**
+
+**Base Unit:** 4px (0.25rem)
+**Common Spacings:** 8px, 16px, 24px, 32px, 48px
+**Container Padding:** 16px on mobile, 24px on desktop
+**Component Spacing:** 8px between related elements, 16px between sections
+
+### **Iconography**
+
+**Icon Library:** Heroicons or similar for consistency
+**Icon Sizes:** 16px, 20px, 24px for different contexts
+**Icon Colors:** Inherit text color or use semantic colors
+
+## **Accessibility Requirements**
+
+### **WCAG Compliance**
+
+- **Level:** AA compliance target
 - **Keyboard Navigation:** Full keyboard accessibility
 - **Screen Reader Support:** Proper ARIA labels and semantic HTML
-- **Focus Management:** Clear focus indicators
-- **Error Handling:** Clear error messages and recovery options
+- **Color Contrast:** Minimum 4.5:1 ratio for normal text
+- **Focus Indicators:** Clear focus states for all interactive elements
 
-### Responsive Design
-- **Breakpoints:** Mobile (320px), Tablet (768px), Desktop (1024px+)
-- **Touch Targets:** Minimum 44px for mobile interactions
-- **Text Scaling:** Support for browser text scaling
-- **Orientation:** Portrait and landscape support
+### **Mobile Accessibility**
 
----
+- **Touch Targets:** Minimum 44px for touch interactions
+- **Gesture Support:** Swipe gestures for mobile navigation
+- **Viewport:** Proper viewport meta tags and responsive design
+- **Performance:** Fast loading times on mobile networks
 
-## Performance & Technical Considerations
+## **Responsive Design Strategy**
 
-### Loading States
-- **Skeleton Screens:** For exercise loading
-- **Progress Indicators:** For AI evaluation
-- **Error States:** Clear messaging for failures
-- **Offline Support:** Basic functionality without network
+### **Breakpoints**
 
-### Animation Guidelines
-- **Duration:** 150ms for micro-interactions, 300ms for transitions
-- **Easing:** Ease-out for natural feel
-- **Performance:** 60fps animations, GPU acceleration
-- **Reduced Motion:** Respect user preferences
+- **Mobile:** 320px - 767px
+- **Tablet:** 768px - 1023px
+- **Desktop:** 1024px+
 
-### Browser Support
-- **Modern Browsers:** Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
-- **Mobile Browsers:** iOS Safari 14+, Chrome Mobile 90+
-- **Progressive Enhancement:** Core functionality works without JavaScript
+### **Layout Adaptations**
 
----
+**Mobile:**
 
-## Next Steps
+- Single column layouts
+- Collapsible navigation
+- Touch-optimized interactions
+- Simplified progress views
 
-### Implementation Priority
-1. **Core Components:** Exercise card, answer input, feedback display
-2. **Theme System:** Dark/light mode implementation
-3. **Responsive Design:** Mobile and tablet optimization
-4. **Accessibility:** WCAG AA compliance
-5. **Performance:** Loading states and error handling
+**Tablet:**
 
-### Design Handoff
-- **Figma Files:** Detailed mockups for all screens
-- **Component Specs:** Technical specifications for developers
-- **Style Guide:** Complete design tokens and guidelines
-- **Prototype:** Interactive prototype for user testing
+- Two-column layouts where appropriate
+- Enhanced navigation
+- Larger touch targets
+- Detailed progress views
 
----
+**Desktop:**
 
-*Document created by BMad Orchestrator using UX Expert Agent*
-*Date: $(date)*
-*Workflow: Greenfield Full-Stack Development* 
+- Multi-column layouts
+- Full navigation visible
+- Hover states and interactions
+- Comprehensive analytics views
+
+## **Performance Requirements**
+
+### **Loading Times**
+
+- **Initial Load:** Under 3 seconds on 3G connection
+- **Navigation:** Under 1 second for page transitions
+- **Exercise Loading:** Under 2 seconds for new exercises
+- **Progress Updates:** Real-time updates without blocking UI
+
+### **Optimization Strategies**
+
+- **Code Splitting:** Lazy load non-critical components
+- **Image Optimization:** Compress and optimize all images
+- **Caching:** Implement proper caching strategies
+- **Bundle Size:** Keep main bundle under 500KB
+
+## **User Testing Plan**
+
+### **Testing Phases**
+
+**Phase 1: Wireframe Testing**
+
+- Test information architecture and navigation
+- Validate user flows and task completion
+- Identify usability issues early
+
+**Phase 2: Prototype Testing**
+
+- Test interactive prototypes
+- Validate exercise interface usability
+- Test progress tracking comprehension
+
+**Phase 3: Beta Testing**
+
+- Test with real users
+- Validate performance and accessibility
+- Gather feedback for final iterations
+
+### **Success Metrics**
+
+- **Task Completion Rate:** 90%+ for core user flows
+- **Time to Complete:** Under 5 minutes for first practice session
+- **Error Rate:** Less than 5% for form submissions
+- **User Satisfaction:** 4.0+ rating on usability scale
+
+## **Implementation Guidelines**
+
+### **Development Priorities**
+
+1. **Core Navigation** - Establish app structure and routing
+2. **Expression Browser** - Enable expression discovery and filtering
+3. **Exercise Interface** - Build core practice functionality
+4. **Progress Tracking** - Implement analytics and feedback
+5. **Polish & Optimization** - Performance and accessibility improvements
+
+### **Quality Assurance**
+
+- **Design Reviews:** Regular reviews of implemented components
+- **Accessibility Audits:** Automated and manual testing
+- **Performance Monitoring:** Continuous performance tracking
+- **User Feedback:** Regular collection and incorporation of user input
+
+### **Documentation Requirements**
+
+- **Component Documentation:** Storybook or similar for component library
+- **Design Tokens:** Maintained design system with tokens
+- **User Guides:** In-app help and onboarding materials
+- **Developer Documentation:** Technical implementation guides

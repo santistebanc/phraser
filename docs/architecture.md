@@ -1,749 +1,665 @@
-# German Language Learning MVP - Technical Architecture Document
+# **Phraser Language Learning App - Brownfield Enhancement Architecture**
 
-## Introduction
+## **Introduction**
 
-This document outlines the complete technical architecture for the German Language Learning MVP, including backend systems, frontend implementation, and their integration. It serves as the single source of truth for AI-driven development, ensuring consistency across the entire technology stack.
+This document outlines the architectural approach for enhancing Phraser with comprehensive frontend components for expression browsing, interactive exercise interface, progress tracking, and navigation system. Its primary goal is to serve as the guiding architectural blueprint for AI-driven development of new features while ensuring seamless integration with the existing system.
 
-The architecture is designed to support a minimal web application focused on high-quality German expression practice through a curated dataset of useful expressions, comprehensive usage examples, and diverse exercise types, all powered by LLMs for content generation and evaluation.
+**Relationship to Existing Architecture:**
+This document supplements existing project architecture by defining how new components will integrate with current systems. Where conflicts arise between new and existing patterns, this document provides guidance on maintaining consistency while implementing enhancements.
 
-### Change Log
-| Date | Version | Description | Author |
-|------|---------|-------------|---------|
-| $(date) | 1.0 | Initial architecture document | BMad Orchestrator |
+## **Existing Project Analysis**
 
----
+### **Current Project State**
 
-## High Level Architecture
+- **Primary Purpose:** Language learning platform with German expressions, interactive exercises, and AI-powered scoring
+- **Current Tech Stack:** React 19 + TypeScript + Tailwind CSS + Vite + Convex (serverless database)
+- **Architecture Style:** Full-stack React application with Convex backend and React Context state management
+- **Deployment Method:** Convex cloud hosting with Vite development server
 
-### Technical Summary
+### **Available Documentation**
 
-The German Language Learning MVP follows a **serverless architecture** using **Convex** as the unified backend platform, with a **React + TypeScript** frontend built with **Vite** and **Shadcn UI**. The system leverages **LLM APIs** for content generation and evaluation, implementing an **advanced ELO rating system** for adaptive difficulty. The architecture prioritizes **ultra-compact UI design** with sharp edges and colorful accents, while maintaining **sub-2-second response times** for AI evaluation.
+- ✅ Brownfield Architecture Document (`docs/brownfield-architecture.md`)
+- ✅ Product Requirements Document (`docs/prd.md`)
+- ✅ UI/UX Specification (`docs/front-end-spec.md`)
+- ✅ Database Schema (`convex/schema.ts`)
+- ✅ Authentication System (`convex/auth.ts`)
 
-### Platform and Infrastructure Choice
+### **Identified Constraints**
 
-**Platform:** Convex (Unified Backend Platform)
-**Key Services:** 
-- Convex Database (built-in)
-- Convex Functions (serverless)
-- Convex Authentication
-- Convex Real-time capabilities
-- Convex Hosting and Deployment
+- Must maintain existing authentication flow and user session management
+- Must follow existing Tailwind CSS styling patterns and theme compatibility
+- Must integrate with existing Convex React hooks patterns
+- Must preserve existing user data structure without schema changes
+- Must maintain performance characteristics (loading times, responsiveness)
 
-**Deployment Host and Regions:** Convex Cloud (global distribution)
+### **Change Log**
 
-**Rationale:** Convex provides the perfect unified platform for this MVP, offering:
-- Built-in authentication and database
-- Serverless functions for API-like architecture
-- Real-time capabilities for immediate feedback
-- Global deployment with edge functions
-- TypeScript-first development experience
-- Cost-effective scaling for LLM integration
+| Change               | Date       | Version | Description                       | Author            |
+| -------------------- | ---------- | ------- | --------------------------------- | ----------------- |
+| Initial Architecture | 2024-12-19 | 1.0     | Frontend enhancement architecture | BMad Orchestrator |
 
-### Repository Structure
+## **Enhancement Scope and Integration Strategy**
 
-**Structure:** Monorepo with single Convex app
-**Package Organization:** 
-```
-phraser/
-├── convex/                 # Convex backend functions and schema
-│   ├── schema.ts          # Database schema definitions
-│   ├── auth.config.ts     # Authentication configuration
-│   ├── functions/         # API-like functions
-│   │   ├── users.ts       # User management functions
-│   │   ├── expressions.ts # Expression dataset functions
-│   │   ├── exercises.ts   # Exercise generation and delivery
-│   │   ├── evaluation.ts  # AI-powered answer evaluation
-│   │   └── elo.ts         # ELO rating system functions
-│   └── types.ts           # Shared TypeScript types
-├── src/                   # React frontend application
-│   ├── components/        # Reusable UI components
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utility functions and configurations
-│   ├── pages/            # Application pages
-│   └── styles/           # Global styles and theme
-├── docs/                 # Project documentation
-└── package.json          # Root package.json
-```
+### **Enhancement Overview**
 
-### High Level Architecture Diagram
+**Enhancement Type:** UI/UX Overhaul with New Feature Addition
+**Scope:** Comprehensive frontend components for language learning functionality
+**Integration Impact:** Significant Impact - substantial existing code changes with new architectural patterns
+
+### **Integration Approach**
+
+**Code Integration Strategy:** Extend existing React component patterns with new components following established Context API and Convex hooks patterns
+
+**Database Integration:** Leverage existing Convex schema without modifications, using existing tables (expressions, exercises, userProgress, exerciseAttempts)
+
+**API Integration:** Create new Convex functions following existing patterns in `convex/auth.ts` with proper error handling and return types
+
+**UI Integration:** Extend existing Tailwind CSS design system with new components maintaining color scheme, typography, and spacing patterns
+
+### **Compatibility Requirements**
+
+- **Existing API Compatibility:** All new Convex functions must integrate with existing authentication system and user data structure
+- **Database Schema Compatibility:** New features must use existing database schema without requiring schema changes
+- **UI/UX Consistency:** All new components must follow existing design patterns, color schemes, and interaction models
+- **Performance Impact:** Must maintain existing performance characteristics and not exceed current memory usage by more than 20%
+
+## **Tech Stack Alignment**
+
+### **Existing Technology Stack**
+
+| Category         | Current Technology | Version        | Usage in Enhancement  | Notes                            |
+| ---------------- | ------------------ | -------------- | --------------------- | -------------------------------- |
+| Frontend Runtime | React              | 19.0.0         | All new components    | Latest React with hooks          |
+| Build Tool       | Vite               | 6.2.0          | Development and build | Fast development server          |
+| Styling          | Tailwind CSS       | 4.0.14         | All new components    | Utility-first CSS framework      |
+| Language         | TypeScript         | 5.7.2          | All new code          | Type safety and IntelliSense     |
+| Backend          | Convex             | 1.23.0         | New API functions     | Serverless database + functions  |
+| State Management | React Context      | -              | Auth and theme        | Extend existing patterns         |
+| Package Manager  | npm                | -              | Dependencies          | Standard Node.js package manager |
+| Development      | ESLint + Prettier  | 9.21.0 + 3.5.3 | Code quality          | Follow existing standards        |
+
+### **New Technology Additions**
+
+| Technology   | Version | Purpose                | Rationale                   | Integration Method                |
+| ------------ | ------- | ---------------------- | --------------------------- | --------------------------------- |
+| React Router | 6.x     | Client-side routing    | Navigation between sections | Integrate with existing App.tsx   |
+| React Query  | 5.x     | Advanced data fetching | Optimize Convex queries     | Extend existing useQuery patterns |
+
+## **Data Models and Schema Changes**
+
+### **New Data Models**
+
+#### **Expression Browser State**
+
+**Purpose:** Manage expression browsing, filtering, and search state
+**Integration:** Extends existing expressions table queries with client-side state management
+
+**Key Attributes:**
+
+- `filters`: Object - Category, difficulty, search query filters
+- `pagination`: Object - Current page, items per page, total count
+- `sortBy`: String - Sort field and direction
+- `selectedExpression`: Object - Currently selected expression for detail view
+
+**Relationships:**
+
+- **With Existing:** Queries `expressions` table, integrates with `userProgress`
+- **With New:** Feeds into `ExerciseInterface` component
+
+#### **Exercise Session State**
+
+**Purpose:** Manage active exercise session and user interactions
+**Integration:** Extends existing exercises table with real-time session management
+
+**Key Attributes:**
+
+- `currentExercise`: Object - Active exercise data and context
+- `userAnswer`: String - Current user input
+- `sessionStartTime`: Number - Timestamp for performance tracking
+- `attemptHistory`: Array - Previous attempts in current session
+
+**Relationships:**
+
+- **With Existing:** Queries `exercises` table, updates `exerciseAttempts`
+- **With New:** Integrates with `ProgressTracker` for real-time updates
+
+#### **Progress Analytics State**
+
+**Purpose:** Manage progress tracking and statistics calculations
+**Integration:** Aggregates data from existing `userProgress` and `exerciseAttempts` tables
+
+**Key Attributes:**
+
+- `progressSummary`: Object - Aggregated progress metrics
+- `learningHistory`: Array - Recent learning activities
+- `masteryLevels`: Object - Per-expression mastery tracking
+- `performanceTrends`: Object - Time-based performance analytics
+
+**Relationships:**
+
+- **With Existing:** Queries `userProgress`, `exerciseAttempts`, `expressions`
+- **With New:** Provides data for `ProgressTracker` component
+
+### **Schema Integration Strategy**
+
+**Database Changes Required:**
+
+- **New Tables:** None required - using existing schema
+- **Modified Tables:** None required - existing schema supports all features
+- **New Indexes:** None required - existing indexes sufficient
+- **Migration Strategy:** No migration required - enhancement uses existing schema
+
+**Backward Compatibility:**
+
+- All existing user data and functionality preserved
+- Existing authentication and user management unchanged
+- Current API endpoints remain functional
+- Existing components continue to work without modification
+
+## **Component Architecture**
+
+### **New Components**
+
+#### **Navigation Component**
+
+**Responsibility:** Provide consistent navigation throughout the application with routing and user account controls
+**Integration Points:** Integrates with existing `App.tsx`, `AuthContext`, and `ThemeContext`
+
+**Key Interfaces:**
+
+- `useAuth()` - Access user authentication state
+- `useTheme()` - Access theme state for styling
+- React Router navigation hooks
+- Convex query hooks for user data
+
+**File Location:** `src/components/Navigation.tsx`
+
+#### **Expression Browser Component**
+
+**Responsibility:** Browse, search, and filter German expressions with pagination and detail views
+**Integration Points:** Queries existing `expressions` table, integrates with `ExerciseInterface`
+
+**Key Interfaces:**
+
+- `useQuery(api.expressions.getExpressions)` - Fetch expressions with filters
+- `useQuery(api.expressions.getCategories)` - Get available categories
+- `useQuery(api.expressions.getExpressionsByDifficulty)` - Filter by difficulty
+- State management for filters, pagination, and selection
+
+**File Location:** `src/components/ExpressionBrowser.tsx`
+
+#### **Exercise Interface Component**
+
+**Responsibility:** Provide interactive exercise practice with AI scoring and immediate feedback
+**Integration Points:** Uses existing `exercises` table, updates `exerciseAttempts`, integrates with `ProgressTracker`
+
+**Key Interfaces:**
+
+- `useQuery(api.exercises.getExercisesForExpression)` - Load exercises for expression
+- `useMutation(api.exercises.submitExerciseAttempt)` - Submit user answers
+- `useQuery(api.progress.getUserProgress)` - Get user progress for expression
+- State management for exercise session and user interactions
+
+**File Location:** `src/components/ExerciseInterface.tsx`
+
+#### **Progress Tracker Component**
+
+**Responsibility:** Display comprehensive progress statistics, learning history, and performance analytics
+**Integration Points:** Aggregates data from `userProgress`, `exerciseAttempts`, and `expressions` tables
+
+**Key Interfaces:**
+
+- `useQuery(api.progress.getAllUserProgress)` - Get all user progress data
+- `useQuery(api.exercises.getUserAttempts)` - Get user exercise history
+- `useQuery(api.expressions.getExpressions)` - Get expression data for analytics
+- State management for progress calculations and chart data
+
+**File Location:** `src/components/ProgressTracker.tsx`
+
+#### **User Profile Component**
+
+**Responsibility:** Manage user profile information, preferences, and account settings
+**Integration Points:** Extends existing user data from `AuthContext`, integrates with existing auth functions
+
+**Key Interfaces:**
+
+- `useAuth()` - Access and update user data
+- `useMutation(api.auth.updateUserProfile)` - Update user preferences
+- `useQuery(api.auth.getUserById)` - Get detailed user information
+- State management for profile editing and preferences
+
+**File Location:** `src/components/UserProfile.tsx`
+
+### **Component Integration Patterns**
+
+#### **Data Flow Architecture**
 
 ```mermaid
 graph TD
-    A[User Browser] --> B[React Frontend]
-    B --> C[Convex Functions]
-    C --> D[Convex Database]
-    C --> E[LLM APIs]
-    C --> F[Authentication]
-    
-    B --> G[Shadcn UI Components]
-    B --> H[Theme System]
-    B --> I[State Management]
-    
-    C --> J[User Management]
-    C --> K[Expression Dataset]
-    C --> L[Exercise Generation]
-    C --> M[Answer Evaluation]
-    C --> N[ELO Rating System]
-    
-    E --> O[OpenAI/Anthropic/Gemini]
-    
-    style A fill:#FFE4B5
-    style B fill:#ADD8E6
-    style C fill:#90EE90
-    style D fill:#F0E68C
-    style E fill:#E6E6FA
+    A[AuthContext] --> B[Navigation]
+    A --> C[UserProfile]
+    A --> D[All Components]
+
+    E[ThemeContext] --> B
+    E --> D
+
+    F[Convex Queries] --> G[ExpressionBrowser]
+    F --> H[ExerciseInterface]
+    F --> I[ProgressTracker]
+    F --> J[UserProfile]
+
+    G --> H
+    H --> I
+    I --> G
+
+    K[Convex Mutations] --> H
+    K --> J
 ```
 
-### Architectural Patterns
+#### **State Management Strategy**
 
-- **Serverless Architecture:** Convex functions for all backend operations - _Rationale:_ Scalability, cost-effectiveness, and simplified deployment
-- **API-like Function Design:** Independent standalone functions for each action - _Rationale:_ Easy debugging, traceability, and maintenance
-- **Component-Based UI:** Reusable React components with TypeScript - _Rationale:_ Maintainability and type safety across the application
-- **Repository Pattern:** Abstract data access through Convex functions - _Rationale:_ Enables testing and future database migration flexibility
-- **Event-Driven Updates:** Real-time UI updates through Convex subscriptions - _Rationale:_ Immediate feedback and responsive user experience
+**Global State (Context):**
 
----
+- `AuthContext` - User authentication and session management
+- `ThemeContext` - Dark/light theme preferences
 
-## Tech Stack
+**Local State (useState):**
 
-| Category | Technology | Version | Purpose | Rationale |
-|----------|------------|---------|---------|------------|
-| Frontend Language | TypeScript | 5.3.3 | Primary development language | Strong typing, excellent tooling, team expertise |
-| Frontend Framework | React | 18.2.0 | UI framework | Component-based architecture, extensive ecosystem |
-| Build Tool | Vite | 5.0.0 | Development and build tool | Fast development server, optimized builds |
-| UI Component Library | Shadcn UI | Latest | Pre-built components | Consistent design system, customizable |
-| CSS Framework | Tailwind CSS | 3.4.0 | Utility-first CSS | Rapid development, consistent styling |
-| State Management | React Hooks + Convex | Latest | Client and server state | Built-in real-time state management |
-| Backend Platform | Convex | Latest | Unified backend platform | Database, functions, auth, real-time in one |
-| Database | Convex Database | Built-in | Data persistence | Automatic scaling, real-time subscriptions |
-| Authentication | Convex Auth | Built-in | User management | Secure, built-in user system |
-| API Style | Convex Functions | Latest | Backend API | Type-safe, serverless functions |
-| LLM Integration | OpenAI/Anthropic | Latest | Content generation and evaluation | High-quality AI capabilities |
-| Testing Framework | Vitest | Latest | Unit testing | Fast, Vite-native testing |
-| E2E Testing | Playwright | Latest | End-to-end testing | Cross-browser testing |
-| Code Quality | ESLint + Prettier | Latest | Code formatting | Consistent code style |
-| Deployment | Convex Cloud | Latest | Hosting and deployment | Global edge deployment |
+- Component-specific state (filters, pagination, form data)
+- UI interaction state (loading, error, success states)
 
----
+**Server State (Convex Hooks):**
 
-## Data Models
+- `useQuery` - Data fetching and caching
+- `useMutation` - Data updates and mutations
 
-### User Model
+## **API Architecture**
 
-**Purpose:** Represents authenticated users and their learning progress
+### **New Convex Functions**
 
-**Key Attributes:**
-- `_id`: Unique user identifier (Convex-generated)
-- `email`: User's email address (unique)
-- `name`: User's display name
-- `currentLevel`: Current ELO rating (starts at 1000)
-- `totalExercises`: Number of exercises completed
-- `averageScore`: Average score across all exercises
-- `lastActive`: Timestamp of last activity
-- `preferences`: User preferences (theme, etc.)
-- `createdAt`: Account creation timestamp
-
-**Relationships:**
-- One-to-many with ExerciseAttempts
-- One-to-many with UserProgress
-
-### Expression Model
-
-**Purpose:** Represents German expressions in the curated dataset (global content)
-
-**Key Attributes:**
-- `_id`: Unique expression identifier
-- `text`: The German expression text
-- `translation`: English translation
-- `difficulty`: ELO rating of the expression (B1-C2 levels)
-- `category`: Expression category (formal, informal, business, etc.)
-- `usageExamples`: Array of 5 usage examples
-- `tags`: Array of relevant tags
-- `createdAt`: Creation timestamp
-- `lastUpdated`: Last modification timestamp
-
-**Relationships:**
-- One-to-many with Exercises
-- Many-to-many with Users (through UserProgress)
-
-### Exercise Model
-
-**Purpose:** Represents individual translation exercises (global content)
-
-**Key Attributes:**
-- `_id`: Unique exercise identifier
-- `expressionId`: Reference to parent expression
-- `type`: Exercise type (translation, contextual, completion)
-- `question`: The exercise question/prompt
-- `correctAnswer`: Expected correct answer
-- `difficulty`: ELO rating of the exercise
-- `hints`: Optional hints for the exercise
-- `createdAt`: Creation timestamp
-- `globalUsageCount`: Total number of times used across all users
-- `globalAverageScore`: Average score across all users
-
-**Relationships:**
-- Many-to-one with Expression
-- One-to-many with ExerciseAttempts
-
-**Relationships:**
-- Many-to-one with Expression
-- One-to-many with ExerciseAttempts
-
-### ExerciseAttempt Model
-
-**Purpose:** Tracks individual user attempts at exercises (user-specific data)
-
-**Key Attributes:**
-- `_id`: Unique attempt identifier
-- `userId`: Reference to user
-- `exerciseId`: Reference to exercise
-- `userAnswer`: User's submitted answer
-- `aiScore`: AI evaluation score (0-1)
-- `aiFeedback`: AI-generated feedback text
-- `levelChange`: ELO rating change for user
-- `timeSpent`: Time taken to answer (seconds)
-- `createdAt`: Attempt timestamp
-
-**Relationships:**
-- Many-to-one with User
-- Many-to-one with Exercise
-
-### UserProgress Model
-
-**Purpose:** Tracks user progress and mastery for specific expressions (user-specific data)
-
-**Key Attributes:**
-- `_id`: Unique progress record identifier
-- `userId`: Reference to user
-- `expressionId`: Reference to expression
-- `masteryLevel`: Current mastery level (0-100)
-- `attemptsCount`: Number of attempts on this expression
-- `lastAttempted`: Last attempt timestamp
-- `bestScore`: Best score achieved on this expression
-- `averageScore`: Average score across attempts for this expression
-
-**Relationships:**
-- Many-to-one with User
-- Many-to-one with Expression
-
----
-
-## Database Schema
-
-### Convex Schema Definition
+#### **Expressions API (`convex/expressions.ts`)**
 
 ```typescript
-// convex/schema.ts
-import { defineSchema, defineTable } from "convex/schema";
-import { v } from "convex/values";
+// Get expressions with filtering and pagination
+export const getExpressions = query({
+  args: {
+    category: v.optional(v.string()),
+    difficulty: v.optional(v.number()),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    // Implementation following existing patterns
+  },
+});
 
-export default defineSchema({
-  users: defineTable({
-    email: v.string(),
-    name: v.optional(v.string()),
-    currentLevel: v.number(), // ELO rating, starts at 1000
-    totalExercises: v.number(),
-    averageScore: v.number(),
-    lastActive: v.number(), // timestamp
-    preferences: v.optional(v.object({
-      theme: v.optional(v.string()),
-      notifications: v.optional(v.boolean()),
-    })),
-    createdAt: v.number(),
-  }).index("by_email", ["email"]),
+// Get expression categories
+export const getCategories = query({
+  args: {},
+  handler: async (ctx, args) => {
+    // Implementation following existing patterns
+  },
+});
 
-  expressions: defineTable({
-    text: v.string(),
-    translation: v.string(),
-    difficulty: v.number(), // ELO rating
-    category: v.string(),
-    usageExamples: v.array(v.string()),
-    tags: v.array(v.string()),
-    createdAt: v.number(),
-    lastUpdated: v.number(),
-  }).index("by_difficulty", ["difficulty"]),
+// Get expressions by difficulty range
+export const getExpressionsByDifficulty = query({
+  args: {
+    minDifficulty: v.number(),
+    maxDifficulty: v.number(),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    // Implementation following existing patterns
+  },
+});
+```
 
-  exercises: defineTable({
-    expressionId: v.id("expressions"),
-    type: v.string(), // "translation", "contextual", "completion"
-    question: v.string(),
-    correctAnswer: v.string(),
-    difficulty: v.number(), // ELO rating
-    hints: v.optional(v.array(v.string())),
-    createdAt: v.number(),
-    globalUsageCount: v.number(), // Total usage across all users
-    globalAverageScore: v.number(), // Average score across all users
-  }).index("by_expression", ["expressionId"]),
+#### **Exercises API (`convex/exercises.ts`)**
 
-  exerciseAttempts: defineTable({
+```typescript
+// Get exercises for an expression
+export const getExercisesForExpression = query({
+  args: { expressionId: v.id("expressions") },
+  handler: async (ctx, args) => {
+    // Implementation following existing patterns
+  },
+});
+
+// Submit exercise attempt
+export const submitExerciseAttempt = mutation({
+  args: {
     userId: v.id("users"),
     exerciseId: v.id("exercises"),
     userAnswer: v.string(),
-    aiScore: v.number(), // 0-1 scale
+    aiScore: v.number(),
     aiFeedback: v.string(),
-    levelChange: v.number(), // ELO change
-    timeSpent: v.number(), // seconds
-    createdAt: v.number(),
-  }).index("by_user", ["userId"]),
+    levelChange: v.number(),
+    timeSpent: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // Implementation following existing patterns
+  },
+});
+```
 
-  userProgress: defineTable({
+#### **Progress API (`convex/progress.ts`)**
+
+```typescript
+// Get all user progress
+export const getAllUserProgress = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    // Implementation following existing patterns
+  },
+});
+
+// Update user progress
+export const updateUserProgress = mutation({
+  args: {
     userId: v.id("users"),
     expressionId: v.id("expressions"),
-    masteryLevel: v.number(), // 0-100
+    masteryLevel: v.number(),
     attemptsCount: v.number(),
-    lastAttempted: v.number(),
     bestScore: v.number(),
     averageScore: v.number(),
-  }).index("by_user_expression", ["userId", "expressionId"]),
-});
-```
-
----
-
-## API-like Function Architecture
-
-### Core Functions
-
-#### User Management Functions
-
-```typescript
-// convex/functions/users.ts
-export const createUser = mutation({
-  args: { email: v.string(), name: v.optional(v.string()) },
-  handler: async (ctx, args) => {
-    // Create new user with initial ELO rating
-  }
-});
-
-export const getUser = query({
-  args: { userId: v.id("users") },
-  handler: async (ctx, args) => {
-    // Get user data with current level
-  }
-});
-
-export const updateUserLevel = mutation({
-  args: { userId: v.id("users"), newLevel: v.number() },
-  handler: async (ctx, args) => {
-    // Update user's ELO rating
-  }
-});
-```
-
-#### Expression Dataset Functions
-
-```typescript
-// convex/functions/expressions.ts
-export const getExpressions = query({
-  args: { limit: v.optional(v.number()) },
-  handler: async (ctx, args) => {
-    // Get expressions with pagination
-  }
-});
-
-export const generateExpressions = mutation({
-  args: { count: v.number() },
-  handler: async (ctx, args) => {
-    // Generate new expressions using LLM
-  }
-});
-```
-
-#### Exercise Management Functions
-
-```typescript
-// convex/functions/exercises.ts
-export const getNextExercise = query({
-  args: { userId: v.id("users") },
-  handler: async (ctx, args) => {
-    // Select next exercise based on user level and history
-    // Returns global exercise data + user-specific attempt history
-  }
-});
-
-export const generateExercises = mutation({
-  args: { expressionId: v.id("expressions"), count: v.number() },
-  handler: async (ctx, args) => {
-    // Generate exercises for an expression using LLM
-    // Creates global exercise content independent of users
-  }
-});
-
-export const updateExerciseStats = mutation({
-  args: { exerciseId: v.id("exercises"), userScore: v.number() },
-  handler: async (ctx, args) => {
-    // Update global exercise statistics (usage count, average score)
-    // Called after each user attempt
-  }
-});
-```
-
-#### Answer Evaluation Functions
-
-```typescript
-// convex/functions/evaluation.ts
-export const evaluateAnswer = mutation({
-  args: { 
-    exerciseId: v.id("exercises"), 
-    userAnswer: v.string(),
-    userId: v.id("users")
   },
   handler: async (ctx, args) => {
-    // Evaluate answer using LLM
-    // Create user-specific ExerciseAttempt record
-    // Update global exercise statistics
-    // Update user ELO rating
-  }
+    // Implementation following existing patterns
+  },
 });
 ```
 
-#### ELO Rating System Functions
+### **API Integration Patterns**
+
+**Error Handling:** Follow existing patterns from `convex/auth.ts` with try-catch blocks and user-friendly error messages
+
+**Validation:** Use Convex validators (`v.string()`, `v.number()`, `v.id()`) following existing patterns
+
+**Return Types:** Maintain consistent return structures with proper TypeScript types
+
+**Performance:** Implement pagination, caching, and efficient queries following Convex best practices
+
+## **Routing and Navigation Architecture**
+
+### **Route Structure**
 
 ```typescript
-// convex/functions/elo.ts
-export const calculateEloChange = query({
-  args: { 
-    userRating: v.number(), 
-    exerciseRating: v.number(), 
-    userScore: v.number() 
+// App routing with React Router
+const routes = [
+  {
+    path: "/",
+    element: <Dashboard />,
   },
-  handler: async (ctx, args) => {
-    // Calculate ELO rating changes
-  }
-});
-
-export const updateRatings = mutation({
-  args: { 
-    userId: v.id("users"), 
-    exerciseId: v.id("exercises"), 
-    userScore: v.number() 
+  {
+    path: "/expressions",
+    element: <ExpressionBrowser />,
   },
-  handler: async (ctx, args) => {
-    // Update both user and exercise ratings
-  }
-});
-```
-
----
-
-## LLM Integration Strategy
-
-### Provider Selection
-
-**Primary Choice:** OpenAI GPT-4 for content generation, GPT-3.5-turbo for evaluation
-**Fallback:** Anthropic Claude for evaluation if cost optimization needed
-**Rationale:** GPT-4 provides highest quality for content generation, GPT-3.5-turbo is cost-effective for evaluation
-
-### Integration Patterns
-
-#### Content Generation (GPT-4)
-```typescript
-// convex/lib/llm.ts
-export const generateExpression = async (prompt: string) => {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4",
-    messages: [
-      { role: "system", content: "You are a German language expert..." },
-      { role: "user", content: prompt }
-    ],
-    temperature: 0.7,
-    max_tokens: 500
-  });
-  return response.choices[0].message.content;
-};
-```
-
-#### Answer Evaluation (GPT-3.5-turbo)
-```typescript
-export const evaluateAnswer = async (
-  question: string, 
-  correctAnswer: string, 
-  userAnswer: string
-) => {
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [
-      { role: "system", content: "Evaluate German translation answers..." },
-      { role: "user", content: `Question: ${question}\nCorrect: ${correctAnswer}\nUser: ${userAnswer}` }
-    ],
-    temperature: 0.3,
-    max_tokens: 200
-  });
-  return parseEvaluation(response.choices[0].message.content);
-};
-```
-
-### Cost Optimization Strategy
-
-1. **Separate Models:** GPT-4 for generation (quality), GPT-3.5-turbo for evaluation (cost)
-2. **Caching:** Cache generated content to avoid regeneration
-3. **Batch Processing:** Generate multiple exercises in single API call
-4. **Rate Limiting:** Implement intelligent rate limiting to stay within budget
-5. **Fallback Strategy:** Switch to cheaper models if cost exceeds threshold
-
----
-
-## Frontend Architecture
-
-### Component Structure
-
-```
-src/
-├── components/
-│   ├── ui/                 # Shadcn UI components
-│   ├── auth/              # Authentication components
-│   ├── exercise/          # Exercise-related components
-│   ├── progress/          # Progress tracking components
-│   └── layout/            # Layout components
-├── hooks/
-│   ├── useAuth.ts         # Authentication hook
-│   ├── useExercise.ts     # Exercise management hook
-│   ├── useProgress.ts     # Progress tracking hook
-│   └── useTheme.ts        # Theme management hook
-├── lib/
-│   ├── convex.ts          # Convex client configuration
-│   ├── utils.ts           # Utility functions
-│   └── constants.ts       # Application constants
-└── pages/
-    ├── AuthPage.tsx       # Login/signup page
-    ├── PracticePage.tsx   # Main practice interface
-    └── LoadingPage.tsx    # Loading states
-```
-
-### State Management
-
-**Convex Real-time State:**
-- User authentication state
-- Current exercise data
-- User progress and level
-- Real-time updates for immediate feedback
-
-**Local State (React Hooks):**
-- UI state (loading, error states)
-- Form data (answer input)
-- Theme preferences
-- Session-specific data
-
-### Theme System
-
-```typescript
-// src/lib/theme.ts
-export const theme = {
-  light: {
-    background: "#ffffff",
-    foreground: "#000000",
-    primary: "#3b82f6",
-    secondary: "#64748b",
-    accent: "#f59e0b",
-    border: "#e2e8f0",
+  {
+    path: "/exercises/:expressionId",
+    element: <ExerciseInterface />,
   },
-  dark: {
-    background: "#0f172a",
-    foreground: "#f8fafc",
-    primary: "#60a5fa",
-    secondary: "#94a3b8",
-    accent: "#fbbf24",
-    border: "#334155",
-  }
-};
+  {
+    path: "/progress",
+    element: <ProgressTracker />,
+  },
+  {
+    path: "/profile",
+    element: <UserProfile />,
+  },
+];
 ```
 
----
+### **Navigation Integration**
 
-## Performance Considerations
+**Primary Navigation:** Top navigation bar with main sections and user account controls
 
-### Optimization Strategies
+**Breadcrumbs:** Contextual navigation showing current location and parent sections
 
-1. **Convex Optimizations:**
-   - Use indexes for frequent queries
-   - Implement pagination for large datasets
-   - Cache frequently accessed data
-   - Optimize function execution time
+**Mobile Navigation:** Collapsible menu for mobile devices with touch-optimized interactions
 
-2. **Frontend Optimizations:**
-   - Lazy load components
-   - Implement virtual scrolling for large lists
-   - Optimize bundle size with tree shaking
-   - Use React.memo for expensive components
+**Deep Linking:** Support for direct navigation to specific expressions, exercises, and progress views
 
-3. **LLM Integration Optimizations:**
-   - Implement request caching
-   - Use streaming responses where possible
-   - Batch API calls when feasible
-   - Implement retry logic with exponential backoff
+## **Performance and Optimization Strategy**
 
-### Performance Targets
+### **Performance Requirements**
 
-- **Page Load Time:** < 2 seconds
-- **AI Evaluation Response:** < 2 seconds
-- **Exercise Loading:** < 1 second
-- **Theme Switching:** < 100ms
-- **Real-time Updates:** < 500ms
+- **Initial Load:** Under 3 seconds on 3G connection
+- **Navigation:** Under 1 second for page transitions
+- **Exercise Loading:** Under 2 seconds for new exercises
+- **Progress Updates:** Real-time updates without blocking UI
 
----
+### **Optimization Strategies**
 
-## Security Considerations
+**Code Splitting:**
 
-### Authentication Security
+- Lazy load non-critical components
+- Route-based code splitting with React Router
+- Component-level lazy loading for heavy components
 
-1. **Convex Auth Integration:**
-   - Use built-in Convex authentication
-   - Implement proper session management
-   - Secure password requirements
-   - Email verification for new accounts
+**Data Fetching:**
 
-2. **API Security:**
-   - Validate all function inputs
-   - Implement rate limiting
-   - Secure LLM API key storage
-   - Input sanitization for user content
+- Implement React Query for caching and background updates
+- Optimistic updates for better perceived performance
+- Pagination for large datasets
 
-### Data Protection
+**Bundle Optimization:**
 
-1. **User Data:**
-   - Encrypt sensitive user information
-   - Implement data retention policies
-   - Provide data export/deletion capabilities
-   - GDPR compliance considerations
+- Tree shaking for unused code
+- Compression and minification
+- CDN for static assets
 
-2. **Content Security:**
-   - Validate generated content for inappropriate material
-   - Implement content moderation
-   - Secure storage of exercise data
-   - Backup and recovery procedures
+**Caching Strategy:**
 
----
+- Convex query caching
+- Browser caching for static assets
+- Service worker for offline support
 
-## Testing Strategy
+## **Security and Data Integrity**
 
-### Testing Pyramid
+### **Security Requirements**
 
-1. **Unit Tests (70%):**
-   - ELO algorithm functions
-   - Utility functions
-   - Component logic
-   - Type validation
+- **Authentication:** All new functions validate user authentication
+- **Authorization:** User data properly scoped to authenticated users
+- **Input Validation:** All user inputs validated before processing
+- **Data Protection:** Sensitive data encrypted and protected
 
-2. **Integration Tests (20%):**
-   - Convex function integration
-   - LLM API integration
-   - Database operations
-   - Authentication flows
+### **Data Integrity Requirements**
 
-3. **E2E Tests (10%):**
-   - Complete user journeys
-   - Cross-browser compatibility
-   - Performance testing
-   - Accessibility testing
+- **Atomic Transactions:** Exercise attempts processed atomically
+- **Consistency:** Progress updates consistent with user statistics
+- **Validation:** All data validated before storage and display
+- **Synchronization:** User session data properly synchronized
 
-### Testing Tools
+## **Testing Strategy**
 
-- **Unit Testing:** Vitest for fast, Vite-native testing
-- **Component Testing:** React Testing Library
-- **E2E Testing:** Playwright for cross-browser testing
-- **API Testing:** Convex function testing utilities
-- **Performance Testing:** Lighthouse CI
+### **Testing Approach**
 
----
+**Unit Testing:**
 
-## Deployment Strategy
+- Component testing with React Testing Library
+- Function testing for Convex functions
+- Utility function testing
 
-### Development Environment
+**Integration Testing:**
 
-1. **Local Development:**
-   - Convex dev environment
-   - Vite dev server
-   - Hot reload for both frontend and backend
-   - Local database for testing
+- API integration testing
+- Component interaction testing
+- User flow testing
 
-2. **Staging Environment:**
-   - Convex staging deployment
-   - Preview deployments for testing
-   - Integration testing environment
-   - Performance monitoring
+**E2E Testing:**
 
-### Production Deployment
+- Complete user journey testing
+- Cross-browser compatibility testing
+- Mobile responsiveness testing
 
-1. **Convex Cloud:**
-   - Automatic deployment from Git
-   - Global edge distribution
-   - Built-in monitoring and logging
-   - Automatic scaling
+### **Testing Tools**
 
-2. **Monitoring and Alerting:**
-   - Convex dashboard monitoring
-   - Error tracking and alerting
-   - Performance metrics
-   - User analytics
+- **Jest:** Unit and integration testing
+- **React Testing Library:** Component testing
+- **Cypress:** E2E testing
+- **Convex Testing:** Backend function testing
 
----
+## **Deployment and Infrastructure**
 
-## Implementation Roadmap
+### **Deployment Strategy**
 
-### Phase 1: Foundation (Week 1-2)
-- [ ] Set up Convex project and authentication
-- [ ] Create React + TypeScript + Vite project
-- [ ] Implement basic UI with Shadcn UI
-- [ ] Set up database schema
-- [ ] Create basic user management functions
+**Development:**
 
-### Phase 2: Core Features (Week 3-4)
-- [ ] Implement expression dataset structure
-- [ ] Create exercise generation functions
-- [ ] Build ELO rating system
-- [ ] Implement answer evaluation with LLM
-- [ ] Create exercise selection algorithm
+- Local development with `npm run dev`
+- Convex development environment
+- Hot reloading for frontend changes
 
-### Phase 3: User Experience (Week 5-6)
-- [ ] Build ultra-compact UI components
-- [ ] Implement theme system
-- [ ] Add progress tracking
-- [ ] Create loading states and error handling
-- [ ] Polish user interactions
+**Staging:**
 
-### Phase 4: Testing and Polish (Week 7-8)
-- [ ] Comprehensive testing suite
-- [ ] Performance optimization
-- [ ] Security audit
-- [ ] Final UI polish
-- [ ] Deployment preparation
+- Convex staging environment
+- Frontend deployment to staging URL
+- Integration testing environment
 
----
+**Production:**
 
-## Risk Mitigation
+- Convex production environment
+- Frontend deployment to production URL
+- Monitoring and error tracking
 
-### Technical Risks
+### **Infrastructure Requirements**
 
-1. **LLM API Reliability:**
-   - Implement fallback providers
-   - Cache responses to reduce API calls
-   - Monitor API costs and usage
+**Convex Backend:**
 
-2. **Performance Issues:**
-   - Implement comprehensive monitoring
-   - Set up performance budgets
-   - Plan for scaling strategies
+- Existing Convex project with enhanced functions
+- Database schema remains unchanged
+- Real-time subscriptions for live updates
 
-3. **Data Quality:**
-   - Implement content validation
-   - Regular quality audits
-   - User feedback mechanisms
+**Frontend Hosting:**
 
-### Business Risks
+- Vite build for production
+- Static file hosting (Vercel, Netlify, etc.)
+- CDN for global performance
 
-1. **User Adoption:**
-   - Focus on core value proposition
-   - Implement user feedback loops
-   - Plan for iterative improvements
+**Monitoring:**
 
-2. **Cost Management:**
-   - Monitor LLM API costs
-   - Implement cost optimization strategies
-   - Set up budget alerts
+- Error tracking (Sentry, etc.)
+- Performance monitoring
+- User analytics
 
----
+## **Implementation Guidelines**
 
-*Document created by BMad Orchestrator*
-*Date: $(date)*
-*Version: 1.0* 
+### **Development Phases**
+
+**Phase 1: Foundation (Week 1)**
+
+- Set up React Router and navigation
+- Create basic Convex functions
+- Implement expression browsing foundation
+
+**Phase 2: Core Features (Week 2)**
+
+- Build exercise interface
+- Implement AI scoring system
+- Add progress tracking foundation
+
+**Phase 3: Enhancement (Week 3)**
+
+- Complete progress analytics
+- Add user profile management
+- Implement advanced features
+
+**Phase 4: Polish (Week 4)**
+
+- Performance optimization
+- Comprehensive testing
+- Bug fixes and refinements
+
+### **Code Quality Standards**
+
+**TypeScript:**
+
+- Strict mode enabled
+- Proper type definitions
+- No `any` types without justification
+
+**ESLint:**
+
+- Follow existing linting rules
+- No new warnings or errors
+- Consistent code formatting
+
+**Component Standards:**
+
+- Functional components with hooks
+- Proper prop types and interfaces
+- Accessibility compliance
+
+**Convex Standards:**
+
+- Proper validators for all functions
+- Error handling following existing patterns
+- Performance-optimized queries
+
+### **Documentation Requirements**
+
+**Code Documentation:**
+
+- JSDoc comments for functions
+- README updates for new features
+- Component documentation
+
+**API Documentation:**
+
+- Convex function documentation
+- Type definitions
+- Usage examples
+
+**User Documentation:**
+
+- In-app help and onboarding
+- User guides for new features
+- FAQ and troubleshooting
+
+## **Risk Assessment and Mitigation**
+
+### **Technical Risks**
+
+**Risk:** New Convex functions may impact existing performance
+**Mitigation:** Implement pagination, efficient queries, and proper caching
+
+**Risk:** Complex exercise interface may affect user experience
+**Mitigation:** Progressive enhancement with fallback states and clear loading indicators
+
+**Risk:** Real-time progress tracking may cause UI blocking
+**Mitigation:** Optimistic updates and background synchronization
+
+### **Integration Risks**
+
+**Risk:** New components may break existing authentication flow
+**Mitigation:** Thorough testing of auth integration and session management
+
+**Risk:** Navigation changes may confuse existing users
+**Mitigation:** Maintain familiar patterns while adding new functionality
+
+**Risk:** Theme compatibility issues with new components
+**Mitigation:** Comprehensive testing of dark/light mode across all new components
+
+## **Success Criteria**
+
+### **Functional Success Criteria**
+
+- Users can successfully browse and search expressions with filters
+- Users can complete exercises and receive AI-powered feedback
+- Users can view detailed progress statistics and learning history
+- Users can navigate seamlessly between all app sections
+- All existing functionality (auth, dashboard, theme) remains intact
+
+### **Technical Success Criteria**
+
+- All new components follow existing design patterns and styling
+- New Convex functions integrate properly with existing authentication
+- Performance meets specified requirements (loading times, responsiveness)
+- Code quality passes existing linting and TypeScript standards
+- Dark/light theme compatibility is maintained across all new components
+
+### **User Experience Success Criteria**
+
+- Navigation feels intuitive and responsive
+- Exercise interface provides engaging learning experience
+- Progress tracking motivates continued learning
+- Overall app feels cohesive and professional
+- Mobile and desktop experiences are equally polished
