@@ -94,7 +94,7 @@ The Phraser frontend enhancement project has been fully documented and is ready 
 - **TypeScript 5.7.2** - Type safety and IntelliSense
 - **Tailwind CSS 4.0.14** - Utility-first CSS framework
 - **Vite 6.2.0** - Fast development server
-- **React Router 6.x** - Client-side routing
+- **TanStack Router** - Type-safe client-side routing
 
 ### Backend
 
@@ -152,7 +152,7 @@ The Phraser frontend enhancement project has been fully documented and is ready 
 ### Setup
 
 ```bash
-npm install react-router-dom
+npm install @tanstack/react-router
 npm install @tanstack/react-query
 ```
 
@@ -251,7 +251,7 @@ npm run build            # Build for production
 
 ### React Resources
 
-- [React Router Documentation](https://reactrouter.com/)
+- [TanStack Router Documentation](https://tanstack.com/router)
 - [React Query Documentation](https://tanstack.com/query)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 

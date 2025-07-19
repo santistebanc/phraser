@@ -2,7 +2,7 @@
 
 ## Epic 1: Foundation and Navigation
 
-### Story 1.1: Set up React Router and Navigation Structure
+### Story 1.1: Set up TanStack Router and Navigation Structure
 
 **As a** developer
 **I want to** implement client-side routing and navigation
@@ -10,7 +10,7 @@
 
 **Acceptance Criteria:**
 
-- [ ] React Router is installed and configured
+- [ ] TanStack Router is installed and configured
 - [ ] Navigation component is created with main sections
 - [ ] Routes are defined for all major sections
 - [ ] Navigation is responsive and mobile-friendly
@@ -19,7 +19,7 @@
 
 **Technical Tasks:**
 
-1. Install React Router v6
+1. Install TanStack Router
 2. Create `src/components/Navigation.tsx`
 3. Update `src/App.tsx` with routing
 4. Add route definitions for all sections

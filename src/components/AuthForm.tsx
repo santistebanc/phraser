@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useAuth } from "../contexts/useAuth";
+import { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,7 +10,15 @@ export default function AuthForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { login, register } = useAuth();
+  const { user, login, register } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to dashboard if user is already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate({ to: "/" });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +38,8 @@ export default function AuthForm() {
           }
           await register(email, name, password);
         }
+        // Redirect to dashboard after successful login/register
+        navigate({ to: "/" });
       } catch (err) {
         let msg = "An error occurred";
         if (err instanceof Error) {

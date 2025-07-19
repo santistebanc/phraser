@@ -17,7 +17,7 @@ This document defines the new React components required for the Phraser frontend
 - Integrates with existing `App.tsx`
 - Uses `AuthContext` for user authentication state
 - Uses `ThemeContext` for theme state
-- React Router for navigation
+- TanStack Router for navigation
 
 **Key Interfaces:**
 
