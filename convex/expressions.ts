@@ -49,6 +49,32 @@ export const getExpressions = query({
   },
 });
 
+// Get expression by ID (matches component expectation)
+export const getExpressionById = query({
+  args: { expressionId: v.id("expressions") },
+  returns: v.union(
+    v.object({
+      _id: v.id("expressions"),
+      _creationTime: v.number(),
+      text: v.string(),
+      translation: v.string(),
+      difficulty: v.number(),
+      category: v.string(),
+      usageExamples: v.array(v.string()),
+      tags: v.array(v.string()),
+      createdAt: v.number(),
+      lastUpdated: v.number(),
+      isActive: v.boolean(),
+      usageCount: v.number(),
+    }),
+    v.null(),
+  ),
+  handler: async (ctx, args) => {
+    const expression = await ctx.db.get(args.expressionId);
+    return expression;
+  },
+});
+
 export const getCategories = query({
   args: {},
   returns: v.array(v.string()),

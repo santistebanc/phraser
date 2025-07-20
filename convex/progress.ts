@@ -57,7 +57,55 @@ export const getUserProgress = query({
   },
 });
 
+// Updated function that matches ExerciseInterface expectations
 export const updateUserProgress = mutation({
+  args: {
+    userId: v.id("users"),
+    expressionId: v.id("expressions"),
+    score: v.number(),
+    isCorrect: v.boolean(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const existingProgress = await ctx.db
+      .query("userProgress")
+      .withIndex("by_user_expression", (q) =>
+        q.eq("userId", args.userId).eq("expressionId", args.expressionId),
+      )
+      .unique();
+
+    if (existingProgress) {
+      const newAttemptsCount = existingProgress.attemptsCount + 1;
+      const newBestScore = Math.max(existingProgress.bestScore, args.score);
+      const newAverageScore = 
+        (existingProgress.averageScore * existingProgress.attemptsCount + args.score) / newAttemptsCount;
+      const newMasteryLevel = existingProgress.masteryLevel + (args.isCorrect ? 1 : -1);
+
+      await ctx.db.patch(existingProgress._id, {
+        masteryLevel: Math.max(0, newMasteryLevel), // Don't go below 0
+        attemptsCount: newAttemptsCount,
+        lastAttempted: Date.now(),
+        bestScore: newBestScore,
+        averageScore: newAverageScore,
+      });
+    } else {
+      await ctx.db.insert("userProgress", {
+        userId: args.userId,
+        expressionId: args.expressionId,
+        masteryLevel: args.isCorrect ? 1 : 0,
+        attemptsCount: 1,
+        lastAttempted: Date.now(),
+        bestScore: args.score,
+        averageScore: args.score,
+      });
+    }
+
+    return null;
+  },
+});
+
+// Legacy function for backward compatibility
+export const updateUserProgressLegacy = mutation({
   args: {
     userId: v.id("users"),
     expressionId: v.id("expressions"),

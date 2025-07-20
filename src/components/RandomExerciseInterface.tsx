@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -24,8 +24,7 @@ interface Exercise {
   isActive: boolean;
 }
 
-export function ExerciseInterface() {
-  const { expressionId } = useParams({ from: "/exercises/$expressionId" });
+export function RandomExerciseInterface() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -36,16 +35,21 @@ export function ExerciseInterface() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch a single random exercise for this expression
-  const exercise = useQuery(api.exercises.getRandomExerciseByExpression, {
-    expressionId: expressionId as string,
+  // Fetch a random exercise weighted by user level
+  const exercise = useQuery(api.exercises.getRandomExercise, {
     userId: user?._id,
   });
 
-  // Fetch expression details
-  const expression = useQuery(api.expressions.getExpressionById, {
-    expressionId: expressionId as string,
-  });
+  // Fetch expression details for the random exercise (only when we have an exercise)
+  const expression = useQuery(
+    api.expressions.getExpressionById,
+    {
+      expressionId: exercise?.expressionId || "",
+    },
+    {
+      enabled: !!exercise?.expressionId, // Only call when we have a valid expressionId
+    },
+  );
 
   // Mutations
   const submitExerciseAttempt = useMutation(
@@ -54,7 +58,7 @@ export function ExerciseInterface() {
   const updateUserProgress = useMutation(api.progress.updateUserProgress);
 
   const handleAnswerSubmit = async () => {
-    if (!exercise || !user) return;
+    if (!exercise || !user || !expression) return;
 
     setIsLoading(true);
     const answer = userAnswer || selectedOption || "";
@@ -83,7 +87,7 @@ export function ExerciseInterface() {
       // Update user progress
       await updateUserProgress({
         userId: user._id,
-        expressionId: expressionId as string,
+        expressionId: exercise.expressionId,
         score: baseScore,
         isCorrect: correct,
       });
@@ -222,8 +226,14 @@ export function ExerciseInterface() {
   if (!exercise || !expression) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg text-gray-600 dark:text-gray-400">
-          Loading exercise...
+        <div className="text-center">
+          <div className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+            Loading random exercise...
+          </div>
+          <div className="text-sm text-gray-500 dark:text-gray-500">
+            If this takes too long, there might not be any exercises in the
+            database.
+          </div>
         </div>
       </div>
     );
@@ -234,10 +244,10 @@ export function ExerciseInterface() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Practice: {expression.text}
+          Random Exercise: {expression.text}
         </h1>
         <div className="text-sm text-gray-600 dark:text-gray-400">
-          Difficulty: {exercise.difficulty}
+          Difficulty: {exercise.difficulty} • Your Level: {user?.currentLevel}
         </div>
       </div>
 

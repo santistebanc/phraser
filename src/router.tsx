@@ -8,6 +8,7 @@ import {
 import { Dashboard } from "./components/Dashboard";
 import { ExpressionBrowser } from "./components/ExpressionBrowser";
 import { ExerciseInterface } from "./components/ExerciseInterface";
+import { RandomExerciseInterface } from "./components/RandomExerciseInterface";
 import { ProgressTracker } from "./components/ProgressTracker";
 import { UserProfile } from "./components/UserProfile";
 import AuthForm from "./components/AuthForm";
@@ -46,7 +47,14 @@ const expressionDetailRoute = createRoute({
   component: ExpressionBrowser,
 });
 
-// Exercise interface
+// Random exercise route (MUST come before parameterized route)
+const randomExerciseRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/exercises/random",
+  component: RandomExerciseInterface,
+});
+
+// Exercise interface for specific expression
 const exerciseRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/exercises/$expressionId",
@@ -74,12 +82,13 @@ const authRoute = createRoute({
   component: AuthForm,
 });
 
-// Route tree
+// Route tree - order matters!
 const routeTree = rootRoute.addChildren([
   indexRoute,
   expressionsRoute,
   expressionDetailRoute,
-  exerciseRoute,
+  randomExerciseRoute, // Specific route first
+  exerciseRoute,       // Parameterized route second
   progressRoute,
   profileRoute,
   authRoute,

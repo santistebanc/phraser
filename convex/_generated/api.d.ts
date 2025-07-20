@@ -17,6 +17,7 @@ import type * as auth from "../auth.js";
 import type * as exercises from "../exercises.js";
 import type * as expressions from "../expressions.js";
 import type * as progress from "../progress.js";
+import type * as seed_exercises from "../seed_exercises.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   exercises: typeof exercises;
   expressions: typeof expressions;
   progress: typeof progress;
+  seed_exercises: typeof seed_exercises;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
