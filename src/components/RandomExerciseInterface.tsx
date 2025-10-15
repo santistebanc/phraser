@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -34,11 +34,27 @@ export function RandomExerciseInterface() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [timeSpent, setTimeSpent] = useState(0);
 
-  // Fetch a random exercise weighted by user level
-  const exercise = useQuery(api.exercises.getRandomExercise, {
+  // State to store current exercise
+  const [currentExercise, setCurrentExercise] = useState<any>(null);
+  const [isLoadingExercise, setIsLoadingExercise] = useState(false);
+
+  // Fetch initial random exercise
+  const initialExercise = useQuery(api.exercises.getRandomExercise, {
     userId: user?._id,
   });
+
+  // Use initial exercise if no current exercise is set
+  const exercise = currentExercise || initialExercise;
+
+  // Start timing when exercise loads
+  useEffect(() => {
+    if (exercise && !startTime) {
+      setStartTime(Date.now());
+    }
+  }, [exercise, startTime]);
 
   // Fetch expression details for the random exercise (only when we have an exercise)
   const expression = useQuery(
@@ -47,21 +63,32 @@ export function RandomExerciseInterface() {
       expressionId: exercise?.expressionId || "",
     },
     {
-      enabled: !!exercise?.expressionId, // Only call when we have a valid expressionId
+      enabled: !!exercise?.expressionId && exercise.expressionId !== "", // Only call when we have a valid expressionId
     },
   );
 
   // Mutations
-  const submitExerciseAttempt = useMutation(
-    api.exercises.submitExerciseAttempt,
+  const submitExerciseAttemptEnhanced = useMutation(
+    api.exercises.submitExerciseAttemptEnhanced,
   );
   const updateUserProgress = useMutation(api.progress.updateUserProgress);
+  const getNewRandomExercise = useMutation(api.exercises.getNewRandomExercise);
 
   const handleAnswerSubmit = async () => {
     if (!exercise || !user || !expression) return;
 
     setIsLoading(true);
+
+    // Calculate time spent
+    const endTime = Date.now();
+    const timeSpentSeconds = startTime
+      ? Math.round((endTime - startTime) / 1000)
+      : 0;
+    setTimeSpent(timeSpentSeconds);
+
     const answer = userAnswer || selectedOption || "";
+
+    // Basic correctness check for UI feedback
     const correct =
       answer.toLowerCase().trim() ===
       exercise.correctAnswer.toLowerCase().trim();
@@ -70,25 +97,22 @@ export function RandomExerciseInterface() {
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    // Calculate score based on correctness only (no time pressure)
-    const baseScore = correct ? Math.max(10, exercise.difficulty) : 0;
-
     try {
-      // Submit attempt to backend
-      await submitExerciseAttempt({
+      // Submit attempt using enhanced scoring
+      await submitExerciseAttemptEnhanced({
         exerciseId: exercise._id,
         userId: user._id,
         userAnswer: answer,
-        isCorrect: correct,
-        timeSpent: 0, // No time tracking
-        score: baseScore,
+        timeSpent: timeSpentSeconds,
+        question: exercise.question,
+        exerciseType: exercise.type,
       });
 
-      // Update user progress
+      // Update user progress (keeping legacy for compatibility)
       await updateUserProgress({
         userId: user._id,
         expressionId: exercise.expressionId,
-        score: baseScore,
+        score: correct ? Math.max(10, exercise.difficulty) : 0,
         isCorrect: correct,
       });
     } catch (error) {
@@ -98,9 +122,33 @@ export function RandomExerciseInterface() {
     setIsLoading(false);
   };
 
-  const handleNextExercise = () => {
-    // Navigate to a new random exercise
-    navigate({ to: "/exercises/random" });
+  const handleNextExercise = async () => {
+    // Reset state for new exercise
+    setUserAnswer("");
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setIsCorrect(false);
+    setShowFeedback(false);
+    setStartTime(null);
+    setTimeSpent(0);
+    setIsLoadingExercise(true);
+
+    try {
+      // Get a new random exercise using mutation (bypasses cache)
+      const newExercise = await getNewRandomExercise({
+        userId: user?._id,
+      });
+
+      if (newExercise) {
+        setCurrentExercise(newExercise);
+      } else {
+        console.error("No new exercise available");
+      }
+    } catch (error) {
+      console.error("Error getting new exercise:", error);
+    } finally {
+      setIsLoadingExercise(false);
+    }
   };
 
   const handleBackToDashboard = () => {
@@ -223,16 +271,42 @@ export function RandomExerciseInterface() {
     );
   };
 
-  if (!exercise || !expression) {
+  if (!exercise) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-            Loading random exercise...
+            No exercises available
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-500">
-            If this takes too long, there might not be any exercises in the
-            database.
+          <div className="text-sm text-gray-500 dark:text-gray-500 mb-4">
+            There are no active exercises in the database. Please activate
+            exercises or seed the database first.
+          </div>
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={() => navigate({ to: "/" })}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Back to Dashboard
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!expression) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+            Loading expression details...
           </div>
         </div>
       </div>
@@ -273,9 +347,10 @@ export function RandomExerciseInterface() {
           <div className="flex space-x-4">
             <button
               onClick={handleNextExercise}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              disabled={isLoadingExercise}
+              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next Exercise
+              {isLoadingExercise ? "Loading..." : "Next Exercise"}
             </button>
             <button
               onClick={handleBackToDashboard}

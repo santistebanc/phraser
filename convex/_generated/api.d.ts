@@ -14,9 +14,11 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as debug from "../debug.js";
 import type * as exercises from "../exercises.js";
 import type * as expressions from "../expressions.js";
 import type * as progress from "../progress.js";
+import type * as seed from "../seed.js";
 import type * as seed_exercises from "../seed_exercises.js";
 
 /**
@@ -29,9 +31,11 @@ import type * as seed_exercises from "../seed_exercises.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  debug: typeof debug;
   exercises: typeof exercises;
   expressions: typeof expressions;
   progress: typeof progress;
+  seed: typeof seed;
   seed_exercises: typeof seed_exercises;
 }>;
 export declare const api: FilterApi<

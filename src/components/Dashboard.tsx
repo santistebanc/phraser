@@ -2,6 +2,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { DebugPanel } from "./DebugPanel";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -184,6 +185,11 @@ export function Dashboard() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* Debug Panel - Temporary */}
+      <div className="mt-8">
+        <DebugPanel />
       </div>
     </div>
   );

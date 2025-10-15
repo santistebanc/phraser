@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -35,6 +35,8 @@ export function ExerciseInterface() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [timeSpent, setTimeSpent] = useState(0);
 
   // Fetch a single random exercise for this expression
   const exercise = useQuery(api.exercises.getRandomExerciseByExpression, {
@@ -42,14 +44,21 @@ export function ExerciseInterface() {
     userId: user?._id,
   });
 
+  // Start timing when exercise loads
+  useEffect(() => {
+    if (exercise && !startTime) {
+      setStartTime(Date.now());
+    }
+  }, [exercise, startTime]);
+
   // Fetch expression details
   const expression = useQuery(api.expressions.getExpressionById, {
     expressionId: expressionId as string,
   });
 
   // Mutations
-  const submitExerciseAttempt = useMutation(
-    api.exercises.submitExerciseAttempt,
+  const submitExerciseAttemptEnhanced = useMutation(
+    api.exercises.submitExerciseAttemptEnhanced,
   );
   const updateUserProgress = useMutation(api.progress.updateUserProgress);
 
@@ -57,7 +66,17 @@ export function ExerciseInterface() {
     if (!exercise || !user) return;
 
     setIsLoading(true);
+
+    // Calculate time spent
+    const endTime = Date.now();
+    const timeSpentSeconds = startTime
+      ? Math.round((endTime - startTime) / 1000)
+      : 0;
+    setTimeSpent(timeSpentSeconds);
+
     const answer = userAnswer || selectedOption || "";
+
+    // Basic correctness check for UI feedback
     const correct =
       answer.toLowerCase().trim() ===
       exercise.correctAnswer.toLowerCase().trim();
@@ -66,25 +85,22 @@ export function ExerciseInterface() {
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    // Calculate score based on correctness only (no time pressure)
-    const baseScore = correct ? Math.max(10, exercise.difficulty) : 0;
-
     try {
-      // Submit attempt to backend
-      await submitExerciseAttempt({
+      // Submit attempt using enhanced scoring
+      await submitExerciseAttemptEnhanced({
         exerciseId: exercise._id,
         userId: user._id,
         userAnswer: answer,
-        isCorrect: correct,
-        timeSpent: 0, // No time tracking
-        score: baseScore,
+        timeSpent: timeSpentSeconds,
+        question: exercise.question,
+        exerciseType: exercise.type,
       });
 
-      // Update user progress
+      // Update user progress (keeping legacy for compatibility)
       await updateUserProgress({
         userId: user._id,
         expressionId: expressionId as string,
-        score: baseScore,
+        score: correct ? Math.max(10, exercise.difficulty) : 0,
         isCorrect: correct,
       });
     } catch (error) {
